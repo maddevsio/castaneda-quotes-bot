@@ -6,8 +6,7 @@ import (
 )
 
 func TestConfigGet(t *testing.T) {
-	config := Config{"config.test", "yml"}
-	config.Init()
+	config := NewConfig("config.test", "yml")
 	token := config.Get("telegram-token")
 	assert.Equal(t, token, "blah")
 }
