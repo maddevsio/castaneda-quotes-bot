@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/spf13/viper"
 	"log"
-	"os"
 )
 
 type Config struct {
@@ -18,7 +17,6 @@ func (c *Config) Init() {
 	err := viper.ReadInConfig()
 	if err != nil {
 		log.Fatalf("Fatal configuration error: %s \n", err)
-		os.Exit(1)
 	}
 }
 
