@@ -22,18 +22,23 @@ func main() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
-	updates, err := bot.GetUpdatesChan(u)
+	chatID := int64(7110815)
+	messageText := "Bot initialized message"
 
-	for update := range updates {
-		if update.Message == nil {
-			continue
-		}
+	msg := tgbotapi.NewMessage(chatID, messageText)
+	bot.Send(msg)
 
-		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-		msg.ReplyToMessageID = update.Message.MessageID
-
-		bot.Send(msg)
-	}
+	//updates, err := bot.GetUpdatesChan(u)
+	//for update := range updates {
+	//	if update.Message == nil {
+	//		continue
+	//	}
+	//
+	//	log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+	//
+	//	msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
+	//	msg.ReplyToMessageID = update.Message.MessageID
+	//
+	//	bot.Send(msg)
+	//}
 }
