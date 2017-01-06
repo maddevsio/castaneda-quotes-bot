@@ -22,7 +22,7 @@ func main() {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
-	chatID := int64(7110815)
+	chatID := int64(7110815) // TODO: need to store chatIDs
 	messageText := "Bot initialized message"
 
 	msg := tgbotapi.NewMessage(chatID, messageText)
