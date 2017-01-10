@@ -10,13 +10,15 @@ type Chat struct {
 	Info string
 }
 
-func (c *Chat) Get() error {
-	d := diskv.New(diskv.Options{
-		BasePath:     "./db",
+func GetStorage(path string) *diskv.Diskv {
+	return diskv.New(diskv.Options{
+		BasePath:     path,
 		Transform:    func(s string) []string { return []string{} },
 		CacheSizeMax: 1024 * 1024, // 1MB
 	})
+}
 
+func (c *Chat) Get(d *diskv.Diskv) error {
 	bytes, err := d.Read(string(c.Id))
 	if err != nil {
 		return err
@@ -24,13 +26,7 @@ func (c *Chat) Get() error {
 	return bson.Unmarshal(bytes, c)
 }
 
-func (c *Chat) Save() error {
-	d := diskv.New(diskv.Options{
-		BasePath:     "./db",
-		Transform:    func(s string) []string { return []string{} },
-		CacheSizeMax: 1024 * 1024, // 1MB
-	})
-
+func (c *Chat) Save(d *diskv.Diskv) error {
 	b, err := bson.Marshal(c)
 	if (err != nil) {
 		return err
@@ -38,15 +34,8 @@ func (c *Chat) Save() error {
 	return d.Write(string(c.Id), b)
 }
 
-func GetAllChats() ([]Chat, error) {
-	d := diskv.New(diskv.Options{
-		BasePath:     "./db",
-		Transform:    func(s string) []string { return []string{} },
-		CacheSizeMax: 1024 * 1024, // 1MB
-	})
-
+func GetAllChats(d *diskv.Diskv) ([]Chat, error) {
 	var chats []Chat
-
 	for key := range d.Keys(nil) {
 		val, err := d.Read(key)
 		if err != nil {
