@@ -2,3 +2,4 @@
 config
 config.yaml
 db/
+db_test/

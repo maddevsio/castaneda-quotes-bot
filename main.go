@@ -10,13 +10,17 @@ var (
 	token string
 	bot *tgbotapi.BotAPI
 	config Config
+	d = GetStorage("./db")
 )
 
 func task() {
-	chatID := int64(7110815) // TODO: need to store chatIDs
-	messageText := "Bot initialized message"
-	msg := tgbotapi.NewMessage(chatID, messageText)
-	bot.Send(msg)
+	chats, _ := GetAllChats(d)
+	for _, chat := range chats {
+		chatID := int64(chat.Id)
+		messageText := "Bot initialized message"
+		msg := tgbotapi.NewMessage(chatID, messageText)
+		bot.Send(msg)
+	}
 }
 
 func initBot() {
@@ -48,6 +52,9 @@ func listenAndReactInUserMessages() {
 
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 
+		chat := Chat{update.Message.Chat.ID, update.Message.From.UserName}
+		chat.Save(d)
+
 		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
 		msg.ReplyToMessageID = update.Message.MessageID
 
@@ -56,7 +63,7 @@ func listenAndReactInUserMessages() {
 }
 
 func runCronToSendScheduledMessages() {
-	gocron.Every(3).Seconds().Do(task)
+	gocron.Every(10).Seconds().Do(task)
 	<- gocron.Start()
 }
 

@@ -6,8 +6,8 @@ import (
 )
 
 type Chat struct {
-	Id int64
-	Info string
+	Id       int64
+	UserName string
 }
 
 func GetStorage(path string) *diskv.Diskv {
