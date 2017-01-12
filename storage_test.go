@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 	"github.com/stretchr/testify/assert"
-	"github.com/labstack/gommon/log"
+	"log"
 )
 
 var dTest = GetStorage("./db_test")
