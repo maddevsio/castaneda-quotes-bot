@@ -4,18 +4,22 @@ import (
 	"gopkg.in/telegram-bot-api.v4"
 	"github.com/jasonlvhit/gocron"
 	"github.com/puzanov/castaneda-quotes-bot/service"
+	"time"
+	"log"
 )
 
 var (
-	d = service.GetStorage("./db")
-	quotesFilePath = "./quotes.txt"
 	config = service.NewConfig("config", "yml")
+	d = service.GetStorage(config.Get("db").(string))
+	quotesFilePath = "./quotes.txt"
 	bot = service.InitBot(config)
 )
 
 func main() {
 	go service.ListenAndReactInUserMessages(bot, d)
-	gocron.Every(10).Seconds().Do(func() {
+	changeGocronTimezone()
+	//gocron.Every(10).Seconds().Do(func() { // this is for testing
+	gocron.Every(1).Day().At(config.Get("send-time").(string)).Do(func() {
 		chats, _ := service.GetAllChats(d)
 		messageText := service.GetRandomQuote(quotesFilePath)
 		for _, chat := range chats {
@@ -25,4 +29,14 @@ func main() {
 		}
 	})
 	<- gocron.Start()
+}
+
+func changeGocronTimezone() {
+	location, err := time.LoadLocation(config.Get("timezone").(string))
+	if err != nil {
+		log.Fatalf("Unfortunately can't load a location: %v", err)
+
+	} else {
+		gocron.ChangeLoc(location)
+	}
 }
