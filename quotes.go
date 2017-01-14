@@ -13,9 +13,8 @@ func GetRandomQuote(filePath string) string {
 	if err != nil {
 		log.Fatalf("Error reading quotes file: %s \n", err)
 	}
-	rand.Seed(time.Now().Unix())
+	rand.Seed(time.Now().UTC().UnixNano())
 	r := rand.Intn(len(quotes))
-	log.Printf("%v \n", r)
 	return quotes[r]
 }
 
