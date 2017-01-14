@@ -1,4 +1,4 @@
-package main
+package service
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-var dTest = GetStorage("./db_test")
+var dTest = GetStorage("../db_test")
 
 func TestChatSaveAngGet(t *testing.T) {
 	c1 := Chat{1, "Blah"}

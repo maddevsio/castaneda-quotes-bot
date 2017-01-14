@@ -1,4 +1,4 @@
-package main
+package service
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 )
 
 func TestConfigGet(t *testing.T) {
-	config := NewConfig("config.test", "yml")
+	config := NewConfig("../config.test", "yml")
 	token := config.Get("telegram-token")
 	assert.Equal(t, token, "blah")
 }
