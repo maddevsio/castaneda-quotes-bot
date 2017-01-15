@@ -4,9 +4,10 @@ import (
 	"gopkg.in/telegram-bot-api.v4"
 	"log"
 	"github.com/peterbourgon/diskv"
+	"github.com/maddevsio/simple-config"
 )
 
-func InitBot(config Config) *tgbotapi.BotAPI {
+func InitBot(config simple_config.SimpleConfig) *tgbotapi.BotAPI {
 	token := config.Get("telegram-token").(string)
 	log.Printf("%v\n", token)
 

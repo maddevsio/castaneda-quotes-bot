@@ -4,12 +4,13 @@ import (
 	"gopkg.in/telegram-bot-api.v4"
 	"github.com/jasonlvhit/gocron"
 	"github.com/puzanov/castaneda-quotes-bot/service"
+	"github.com/maddevsio/simple-config"
 	"time"
 	"log"
 )
 
 var (
-	config = service.NewConfig("config", "yml")
+	config = simple_config.NewSimpleConfig("config", "yml")
 	d = service.GetStorage(config.Get("db").(string))
 	quotesFilePath = "./quotes.txt"
 	bot = service.InitBot(config)

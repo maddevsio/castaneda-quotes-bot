@@ -1,1 +1,4 @@
 telegram-token: blah
+timezone: Africa/Ouagadougou
+send-time: 13:37
+db: ./db_test
