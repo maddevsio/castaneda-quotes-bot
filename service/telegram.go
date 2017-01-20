@@ -20,7 +20,7 @@ func InitBot(config simple_config.SimpleConfig) *tgbotapi.BotAPI {
 	return bot
 }
 
-func ListenAndReactInUserMessages(bot *tgbotapi.BotAPI, d *diskv.Diskv) {
+func ListenAndReactInUserMessages(bot *tgbotapi.BotAPI, d *diskv.Diskv, quotesFilePath string) {
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
@@ -39,8 +39,15 @@ func ListenAndReactInUserMessages(bot *tgbotapi.BotAPI, d *diskv.Diskv) {
 		chat := Chat{update.Message.Chat.ID, update.Message.From.UserName}
 		chat.Save(d)
 
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-		msg.ReplyToMessageID = update.Message.MessageID
+		var rows [][]tgbotapi.KeyboardButton
+		rows = append(rows, []tgbotapi.KeyboardButton{
+			tgbotapi.NewKeyboardButton("Еще..."),
+		})
+		keyboard := tgbotapi.NewReplyKeyboard(rows...)
+		keyboard.OneTimeKeyboard = true
+
+		msg := tgbotapi.NewMessage(update.Message.Chat.ID, GetRandomQuote(quotesFilePath))
+		msg.ReplyMarkup = keyboard
 
 		bot.Send(msg)
 	}

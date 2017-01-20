@@ -17,7 +17,7 @@ var (
 )
 
 func main() {
-	go service.ListenAndReactInUserMessages(bot, d)
+	go service.ListenAndReactInUserMessages(bot, d, quotesFilePath)
 	changeGocronTimezone()
 	//gocron.Every(10).Seconds().Do(func() { // this is for testing
 	gocron.Every(1).Day().At(config.Get("send-time").(string)).Do(func() {
