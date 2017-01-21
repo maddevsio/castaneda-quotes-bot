@@ -1,7 +1,6 @@
 package main
 
 import (
-	"gopkg.in/telegram-bot-api.v4"
 	"github.com/jasonlvhit/gocron"
 	"github.com/puzanov/castaneda-quotes-bot/service"
 	"github.com/maddevsio/simple-config"
@@ -19,14 +18,12 @@ var (
 func main() {
 	go service.ListenAndReactInUserMessages(bot, d, quotesFilePath)
 	changeGocronTimezone()
-	//gocron.Every(10).Seconds().Do(func() { // this is for testing
-	gocron.Every(1).Day().At(config.Get("send-time").(string)).Do(func() {
+	gocron.Every(10).Seconds().Do(func() { // this is for testing
+	//gocron.Every(1).Day().At(config.Get("send-time").(string)).Do(func() {
 		chats, _ := service.GetAllChats(d)
 		messageText := service.GetRandomQuote(quotesFilePath)
 		for _, chat := range chats {
-			chatID := int64(chat.Id)
-			msg := tgbotapi.NewMessage(chatID, messageText)
-			bot.Send(msg)
+			service.SendMessageWithKeyboard(bot, messageText, int64(chat.Id))
 		}
 	})
 	<- gocron.Start()

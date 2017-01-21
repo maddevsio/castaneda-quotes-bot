@@ -16,7 +16,7 @@ func InitBot(config simple_config.SimpleConfig) *tgbotapi.BotAPI {
 	if err != nil {
 		log.Panic(err)
 	}
-	bot.Debug = true
+	bot.Debug = false
 	return bot
 }
 
@@ -35,20 +35,28 @@ func ListenAndReactInUserMessages(bot *tgbotapi.BotAPI, d *diskv.Diskv, quotesFi
 		}
 
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
-
 		chat := Chat{update.Message.Chat.ID, update.Message.From.UserName}
 		chat.Save(d)
-
-		var rows [][]tgbotapi.KeyboardButton
-		rows = append(rows, []tgbotapi.KeyboardButton{
-			tgbotapi.NewKeyboardButton("Еще..."),
-		})
-		keyboard := tgbotapi.NewReplyKeyboard(rows...)
-		keyboard.OneTimeKeyboard = true
-
-		msg := tgbotapi.NewMessage(update.Message.Chat.ID, GetRandomQuote(quotesFilePath))
-		msg.ReplyMarkup = keyboard
-
-		bot.Send(msg)
+		SendMessageWithKeyboard(bot, GetRandomQuote(quotesFilePath), update.Message.Chat.ID)
 	}
+}
+
+func SendMessageWithKeyboard(bot *tgbotapi.BotAPI, message string, chatID int64) {
+	var rows [][]tgbotapi.KeyboardButton
+	rows = append(rows, []tgbotapi.KeyboardButton{
+		tgbotapi.NewKeyboardButton("Еще..."),
+	})
+	keyboard := tgbotapi.NewReplyKeyboard(rows...)
+	keyboard.OneTimeKeyboard = true
+
+	msg := tgbotapi.NewMessage(chatID, message)
+	msg.ReplyMarkup = keyboard
+
+	log.Printf("Sending this msg: %v", msg)
+	_, err := bot.Send(msg)
+	if (err != nil) {
+		log.Printf("Error sending message: %v", err)
+		return
+	}
+	log.Print("Success")
 }
