@@ -36,7 +36,11 @@ func ListenAndReactInUserMessages(bot *tgbotapi.BotAPI, d *diskv.Diskv, quotesFi
 
 		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
 		chat := Chat{update.Message.Chat.ID, update.Message.From.UserName}
-		chat.Save(d)
+		log.Printf("Saving... %v", chat)
+		err = chat.Save(d)
+		if err != nil {
+			log.Printf("Error saving data: %v", err)
+		}
 		SendMessageWithKeyboard(bot, GetRandomQuote(quotesFilePath), update.Message.Chat.ID)
 	}
 }

@@ -3,6 +3,8 @@ package service
 import (
 	"github.com/peterbourgon/diskv"
 	"gopkg.in/mgo.v2/bson"
+	"log"
+	"strconv"
 )
 
 type Chat struct {
@@ -19,7 +21,7 @@ func GetStorage(path string) *diskv.Diskv {
 }
 
 func (c *Chat) Get(d *diskv.Diskv) error {
-	bytes, err := d.Read(string(c.Id))
+	bytes, err := d.Read(strconv.FormatInt(c.Id, 10))
 	if err != nil {
 		return err
 	}
@@ -31,12 +33,13 @@ func (c *Chat) Save(d *diskv.Diskv) error {
 	if (err != nil) {
 		return err
 	}
-	return d.Write(string(c.Id), b)
+	return d.Write(strconv.FormatInt(c.Id, 10), b)
 }
 
 func GetAllChats(d *diskv.Diskv) ([]Chat, error) {
 	var chats []Chat
 	for key := range d.Keys(nil) {
+		log.Printf("key = %v", key)
 		val, err := d.Read(key)
 		if err != nil {
 			return nil, err
